@@ -67,11 +67,11 @@ public class DataMunger {
 	 */
 	
 	public String getBaseQuery(String queryString) {
-		int i = queryString.indexOf("where");
+		int i = queryString.indexOf(" where ");
 		if(i<0)
 			return queryString;
 		else
-			return queryString.substring(0, i).trim();
+			return queryString.substring(0, i);
 	}
 
 	/*
@@ -87,8 +87,15 @@ public class DataMunger {
 	 */
 	
 	public String[] getFields(String queryString) {
-
-		return null;
+		String arr[] = queryString.toLowerCase().split(" ");
+		String fields = "";
+		for(int i=0; i<arr.length;i++) {
+			if(arr[i].equals("select")) {
+				fields = arr[i+1];
+				break;
+			}
+		}
+		return fields.split(",");
 	}
 
 	/*
@@ -102,8 +109,26 @@ public class DataMunger {
 	 */
 	
 	public String getConditionsPartQuery(String queryString) {
-
-		return null;
+		int i = queryString.indexOf(" group by ");
+		int j = queryString.indexOf(" order by ");
+		String conditionString = "";
+		if(i<0&&j<0) {
+			conditionString = queryString.substring(queryString.indexOf(" where ")).replace(" where ", "");
+		} else {
+			int lastIndex = queryString.length();
+			if(i<0) {
+				lastIndex = j;
+			} else if(j<0) {
+				lastIndex = i;
+			} else if(i>j) {
+				lastIndex = j;
+			} else {
+				lastIndex = i;
+			}
+			conditionString = queryString.substring(queryString.indexOf(" where ", lastIndex)).replace(" where ", "");
+		}
+		System.out.println(conditionString);
+		return conditionString.toLowerCase();
 	}
 
 	/*
@@ -122,8 +147,8 @@ public class DataMunger {
 	 */
 
 	public String[] getConditions(String queryString) {
-
-		return null;
+		String str = getConditionsPartQuery(queryString);
+		return str.split(" and | or ");
 	}
 
 	/*
