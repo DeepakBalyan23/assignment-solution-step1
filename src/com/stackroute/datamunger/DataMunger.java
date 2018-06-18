@@ -1,5 +1,7 @@
 package com.stackroute.datamunger;
 
+import java.util.ArrayList;
+
 /*There are total 5 DataMungertest files:
  * 
  * 1)DataMungerTestTask1.java file is for testing following 3 methods
@@ -169,8 +171,15 @@ public class DataMunger {
 	 */
 
 	public String[] getLogicalOperators(String queryString) {
-
-		return null;
+		ArrayList<String> arr = new ArrayList();
+		if(queryString.contains(" and "))
+			arr.add("and");
+		if(queryString.contains(" or "))
+			arr.add("or");
+		if(arr.size()==0)
+			return null;
+		else
+			return (arr.toArray(new String[arr.size()]));
 	}
 
 	/*
@@ -182,8 +191,13 @@ public class DataMunger {
 	 */
 
 	public String[] getOrderByFields(String queryString) {
-
-		return null;
+		int j = queryString.indexOf(" order by ");
+		if(j<0)
+			return null;
+		else {
+			String str = queryString.substring(j).replace(" order by ", "");
+			return str.split(" ,");
+		}
 	}
 
 	/*
