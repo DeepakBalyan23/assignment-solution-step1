@@ -1,6 +1,7 @@
 package com.stackroute.datamunger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /*There are total 5 DataMungertest files:
  * 
@@ -70,10 +71,13 @@ public class DataMunger {
 	
 	public String getBaseQuery(String queryString) {
 		int i = queryString.indexOf(" where ");
-		if(i<0)
-			return queryString;
-		else
+		if(i<0) {
+			return queryString.split(" group by | order by ")[0];
+		}		
+		else {
 			return queryString.substring(0, i);
+		}
+			
 	}
 
 	/*
@@ -210,8 +214,13 @@ public class DataMunger {
 	 */
 
 	public String[] getGroupByFields(String queryString) {
-
-		return null;
+		int j = queryString.indexOf(" group by ");
+		if(j<0)
+			return null;
+		else {
+			String str = queryString.substring(j).replace(" group by ", "");
+			return str.split(" ,");
+		}
 	}
 
 	/*
@@ -225,7 +234,18 @@ public class DataMunger {
 	 */
 
 	public String[] getAggregateFunctions(String queryString) {
-
+		String str[] = queryString.split(" ");
+		for(String s: str) {
+			if(s.contains("sum(")||s.contains("count(")||s.contains("min(")||s.contains("max(")||s.contains("avg(")) {
+				String res[] = s.split(",");
+				ArrayList <String> resList = new ArrayList(Arrays.asList(res));
+				for(String x:res) {
+					if(!(x.contains("sum(")||x.contains("count(")||x.contains("min(")||x.contains("max(")||x.contains("avg(")))
+						resList.remove(x);
+				}
+				return (resList.toArray(new String[resList.size()]));
+			}
+		}
 		return null;
 	}
 
